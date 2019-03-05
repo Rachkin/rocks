@@ -1,0 +1,50 @@
+<html>
+  <head>
+    <title>Наша многопользовательская игра</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <script src="/socket.io/socket.io.js?x76964"></script>
+  </head>
+  <body>
+      <input type="button" id="disconnect" value="Disconnect">
+    <table rules="cols" align="center" cellpadding="10">
+      <tr>
+        <td align="top">
+          <table rules="cols" align="top" cellpadding="10">
+            <tr>
+              <td>
+                <h1 align="top">Count of rocks: <span id="kount_of_rocks"></span></span>
+                </h1>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div id = "turn"></div>
+              </td>
+            </tr>
+            <tr>
+              <td valign="top">
+
+                <a id="txt"></a>
+                <br>
+                <input type="number" id="count">
+                <br>
+                <input type="button" id="btn" value="GET">
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div id="error"></div>
+              </td>
+            </tr>
+          </table>
+        </td>
+        <td valign="top">
+          <div id ="vs"> </div>
+          <div id="log"> </div>
+        </td>
+      </tr>
+    </table>
+    <div id = "debug"> </div>
+  </body>
+  <script src="/static/game.js?x76964"></script>
+</html>
