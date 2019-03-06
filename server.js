@@ -62,6 +62,8 @@ var kount_of_players = 0;
 
 var kount_of_rocks = 20;
 
+var queue = [];
+
 function playerConnected(sock){
   if(players[sock.id] == undefined){
     return false;
@@ -74,10 +76,38 @@ function resetRoom(){
 
   room.kount_of_rocks = 20;
   room.log = "";
-  if(room.player1 == -1){
+
+  if(room.player2 != -1){
+    var tmp = room.player1;
     room.player1 = room.player2;
+    room.player2 = tmp;
+    tmp = room.name1;
+    room.name1 = room.name2;
+    room.name2 = tmp;
   }
   room.turn = room.player1;
+}
+
+function addToQueue(id){
+  queue.push(id);
+}
+
+function addToGame(){
+
+  if(queue.length > 0 && (room.player1 == -1 || room.player2 == -1)){
+    var id = queue.shift();
+    if(players[id] != undefined){
+      if(room.player1 == -1){
+        room.player1 = id;
+        room.name1 = players[id].nickname;
+        room.turn = id;
+      }
+      else if(room.player2 == -1){
+        room.player2 = id;
+        room.name2 = players[id].nickname;
+      }
+    }
+  }
 }
 
 
@@ -115,8 +145,7 @@ io.on('connection', function(socket) {
     }
 
     if(room.kount_of_rocks - kount <= 0){
-      room.kount_of_rocks = 20;
-      room.log = "";
+      resetRoom();
     }else{
       room.kount_of_rocks -=  kount;
       room.log = ("Player " + players[socket.id].nickname + " get " + kount + " rocks" +'<br>') + room.log;
@@ -133,28 +162,28 @@ io.on('connection', function(socket) {
     if(room.player1 == socket.id){
       room.player1 = -1;
       room.name1 = "";
+      resetRoom();
     }
     else if(room.player2 == socket.id){
       room.player2 = -1;
       room.name2 = "";
+      resetRoom();
     }
+
   });
 ////////////////////////////////////////////////////////
   socket.on('new_player', function(nick_name) {
+
+
+
     players[socket.id] = {
       nickmane: nick_name
     };
     players[socket.id].nickname = nick_name;
     socket_by_id[socket.id] = socket;
-    if(room.player1 == -1){
-      room.player1 = socket.id;
-      room.name1 = players[socket.id].nickname;
-      room.turn = socket.id;
-    }
-    else if(room.player2 == -1){
-      room.player2 = socket.id;
-      room.name2 = players[socket.id].nickname;
-    }
+
+    addToQueue(socket.id);
+
   });
   /////////////////////////////////////////////////////////////////
   socket.on('iamhere', function() {
@@ -162,6 +191,11 @@ io.on('connection', function(socket) {
   });
 });
 setInterval(function() {
-  io.sockets.emit('state', room);
-
+  io.sockets.emit('state', room, queue, players);
+  addToGame();
+  queue.forEach(function(id){
+    if(players[id] != undefined){
+      delete id;
+    }
+  });
 }, 1000 / 60);

@@ -13,6 +13,7 @@ function getCookie(name) {
   return matches ? decodeURIComponent(matches[1]) : undefined;
 }
 
+
 function setCookie(name, value, options) {
   options = options || {};
 
@@ -78,11 +79,15 @@ setInterval(function() {
 }, 1000 / 60);
 
 
-socket.on('state', function(room) {              // draw
+socket.on('state', function(room, queue, players) {              // draw
   document.getElementById('kount_of_rocks').innerHTML = room.kount_of_rocks;
-    document.getElementById('log').innerHTML = "LOG <br> <hr>" + room.log;
+  document.getElementById('log').innerHTML = "LOG <br> <hr>" + room.log;
   document.getElementById('vs').innerHTML = room.name1 + " vs " + room.name2;
-  document.getElementById('debug').innerHTML = room.player1 + "<br>" + room.player2;
+  var s = "";
+  queue.forEach(function(id){
+    s += players[id].nickname + "<br>";
+  });
+  document.getElementById('debug').innerHTML = s;
   if(room.player1 == room.turn)
     document.getElementById('turn').innerHTML = "Now " +room.name1+"'s turn";
   else if(room.player2 == room.turn){
