@@ -16,5 +16,9 @@
   "bugs": {
     "url": "https://github.com/Rachkin/rocks/issues"
   },
-  "homepage": "https://github.com/Rachkin/rocks#readme"
+  "homepage": "https://github.com/Rachkin/rocks#readme",
+  "dependencies": {
+    "express": "^4.16.4",
+    "socket.io": "^2.2.0"
+  }
 }
