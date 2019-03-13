@@ -52,7 +52,7 @@ var room = {
   name1: "",
   name2: "",
   kount_of_rocks: 20,
-  max: 4,
+  max: 3,
   min: 1,
   log: "",
   turn: -1
