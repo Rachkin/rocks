@@ -51,8 +51,17 @@ socket.on('errorIn', function(error){
     }
     document.cookie = "user="+document.getElementById("nickname").value+";";
     window.location.href = "main.html";
-  }else{
-    document.getElementById("ErrorSignIn").innerHTML = "Nickname is valid.";
+  }
+  if(error==1){
+    document.getElementById("ErrorSignIn").innerHTML = "Nickname is already exist!";
+    return;
+  }
+  if(error==2){
+    document.getElementById("ErrorSignIn").innerHTML = "Nickname should use ONLY english letters!";
+    return;
+  }
+  if(error==3){
+    document.getElementById("ErrorSignIn").innerHTML = "Nickname can't be shorter then 4!";
     return;
   }
 });
@@ -62,6 +71,7 @@ document.getElementById("btn").onclick = function(){
 };
 
 
-//setInterval(function() {
-//  socket.emit('movement', );
-//}, 1000 / 60);
+setInterval(function() {
+  document.getElementById("version").innerHTML = "Version: 1.0.1";
+
+}, 1000 / 60);

@@ -94,6 +94,13 @@ socket.on('state', function(room, queue, players) {              // draw
     document.getElementById('turn').innerHTML = "Now " +room.name2+"'s turn";
   }
   document.getElementById('txt').innerHTML = "How many rocks do you want to get? <br> Max - " + room.max + ", Min - " + room.min;
+//  var input = document.getElementById("count");
+document.getElementById("version").innerHTML = "Version: 1.0.1";
+
+  document.getElementById("count").setAttribute("max",room.max);
+  document.getElementById("count").setAttribute("min",room.min);
+
+  document.getElementById("count").setAttribute("value",room.min);
 });
 
 socket.on('logOut', function(room) {              // draw
@@ -104,7 +111,7 @@ socket.on('logOut', function(room) {              // draw
 
 socket.on('errorGet', function(error) {              // draw
   if(error == 1){
-    document.getElementById('error').innerHTML = "You can't get more, then 4!";
+    document.getElementById('error').innerHTML = "You can't get more, then 2!";
   }else if(error == 2){
     document.getElementById('error').innerHTML = "You cn't get more, then you have!";
   }else if(error == 3){
@@ -113,5 +120,7 @@ socket.on('errorGet', function(error) {              // draw
     document.getElementById('error').innerHTML = "You can't get in foreign turn!";
   }else if(error == 5){
     document.getElementById('error').innerHTML = "You can't get, you're alone!";
+  }else if(error == 6){
+    document.getElementById('error').innerHTML = "You can't get, not integer!";
   }
 });

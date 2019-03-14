@@ -1,19 +1,22 @@
 <html>
   <head>
-    <title>Наша многопользовательская игра</title>
+    <title>Our Game</title>
     <link rel="stylesheet" href="styles/main.css">
     <script src="/socket.io/socket.io.js?x76964"></script>
   </head>
   <body>
-      <input type="button" id="disconnect" value="Disconnect">
+
+      <input type="button" id="disconnect" value="Disconnect" class="button">
+      <br>
+      <div id="version">Version: </div>
     <table rules="cols" align="center" cellpadding="10">
       <tr>
         <td align="top">
-          <table rules="cols" align="top" cellpadding="10">
+          <table rules="cols" align="top" cellpadding="10" id="ui">
             <tr valign="top">
               <td>
-                <h1 align="top">Count of rocks: <span id="kount_of_rocks"></span></span>
-                </h1>
+                <br>
+                <h1 align="top">Count of rocks: <span id="kount_of_rocks"></span></span></h1>
               </td>
             </tr>
             <tr valign="top">
@@ -26,9 +29,9 @@
 
                 <a id="txt"></a>
                 <br>
-                <input type="number" id="count">
+                <input type="number" id="count" class="input_text" min="1" max="2" value="1">
                 <br>
-                <input type="button" id="btn" value="GET">
+                <input type="button" id="btn" value="GET" class="button">
               </td>
             </tr>
             <tr valign="top">
@@ -45,6 +48,7 @@
       </tr>
     </table>
     <div id = "debug"> </div>
+
   </body>
   <script src="/static/game.js?x76964"></script>
 </html>

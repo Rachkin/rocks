@@ -11,9 +11,12 @@ var io       = socketIO(server);
 
 //connection.connect();
 
-app.set('port', 5000);
+app.set('port', 8081);
 
 app.use('/static', express.static(__dirname + '/static'));
+app.use('/fonts', express.static(__dirname + '/fonts'));
+app.use('/styles', express.static(__dirname + '/styles'));
+app.use('/images', express.static(__dirname + '/images'));
 
 // Маршруты
 app.get('/', function(request, response) {
@@ -25,6 +28,9 @@ app.get('/index.html', function(request, response) {
 app.get('/styles/main.css', function(request, response) {
     response.sendFile(path.join(__dirname, '/styles/main.css'));
 });
+app.get('/fonts/pixel.ttf', function(request, response) {
+    response.sendFile(path.join(__dirname, '/fonts/pixel.ttf'));
+});
 app.get('/main.html', function(request, response) {
     response.sendFile(path.join(__dirname, '/views/main.html'));
 });
@@ -34,8 +40,8 @@ app.get('/main', function(request, response) {
 });
 
 // Запуск сервера
-server.listen(5000, function() {
-    console.log('Запускаю сервер на порте 5000');
+server.listen(8081, function() {
+    console.log('Running server at port 8081');
 });
 
 // Обработчик веб-сокетов
@@ -52,12 +58,13 @@ var room = {
   name1: "",
   name2: "",
   kount_of_rocks: 20,
-  max: 3,
+  max: 2,
   min: 1,
   log: "",
   turn: -1
 };
 
+var allowedSymbols = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM_-1234567890"
 var kount_of_players = 0;
 
 var kount_of_rocks = 20;
@@ -110,11 +117,47 @@ function addToGame(){
   }
 }
 
+function checkNick(nick, id){
+
+  for(var i in players){
+    if(nick == players[i].nickname && players[i].id != id){
+  //    socket.emit('errorIn', 1);
+      console.log('Player ' + nick + ' alredy exist!');
+      return 1;
+    }
+  }
+  console.log('Nick is free');
+
+
+  for(el in nick){
+    var ex = 0;
+    for(c in allowedSymbols){
+      if(allowedSymbols[c] == nick[el]) ex = 1;
+    //  console.log(el );
+    }
+    if(ex == 0){
+  //    socket.emit('errorIn', 2);
+      return 2;
+    }
+  }
+  console.log('Letter are ok');
+
+  if(nick.length < 4){
+//    socket.emit('errorIn', 3);
+    return 3;
+  }
+  console.log('Length >= 4');
+
+//  socket.emit('errorIn', 0);
+  return 0;
+}
+
 
 io.on('connection', function(socket) {
 /////////////////////////////////////////////////////////
   socket.on('sing_in', function(nickname) {
-    socket.emit('errorIn', 0);
+    var error = checkNick(nickname, socket.id);
+    socket.emit('errorIn', error);
   });
 ////////////////////////////////////////////////////////////
   socket.on('get', function(kount) {
@@ -144,6 +187,11 @@ io.on('connection', function(socket) {
       return;
     }
 
+    if(kount%1 != 0){
+      socket.emit('errorGet', 6);
+      return;
+    }
+
     if(room.kount_of_rocks - kount <= 0){
       resetRoom();
     }else{
@@ -157,8 +205,10 @@ io.on('connection', function(socket) {
   });
 ////////////////////////////////////////////////////
   socket.on('disconnect', function() {
-    delete players[socket.id];
-    delete last_connection[socket.id];
+    if(players[socket.id] != undefined)
+      delete players[socket.id];
+    if(last_connection[socket.id] != undefined)
+      delete last_connection[socket.id];
     if(room.player1 == socket.id){
       room.player1 = -1;
       room.name1 = "";
@@ -169,15 +219,18 @@ io.on('connection', function(socket) {
       room.name2 = "";
       resetRoom();
     }
-
   });
 ////////////////////////////////////////////////////////
   socket.on('new_player', function(nick_name) {
-
-
+    var error = checkNick(nick_name, socket.id)
+    if(error){
+      socket.emit('logOut');
+      return;
+    }
 
     players[socket.id] = {
-      nickmane: nick_name
+      nickmane: nick_name,
+      id: socket.id
     };
     players[socket.id].nickname = nick_name;
     socket_by_id[socket.id] = socket;

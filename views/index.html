@@ -1,18 +1,7 @@
 <html>
   <head>
-    <title>Наша многопользовательская игра</title>
-    <style>
-      canvas {
-        width: 800px;
-        height: 600px;
-        border: 5px solid black;
-
-      }
-      .nick{
-        text-align: left;
-      }
-
-    </style>
+    <title>Our Game - Sign In</title>
+    <link rel="stylesheet" href="styles/main.css">
     <script src="/socket.io/socket.io.js?x76964"></script>
   </head>
   <body>
@@ -20,6 +9,7 @@
       <tr>
         <td>
           <h1 align="center">Sign In</h1>
+          <div id="version">Version: 1.0.</div>
         </td>
       </tr>
       <tr>
@@ -31,9 +21,9 @@
         <td valign="top">
           <a id="nick">Nick:</a>
           <br>
-          <input type="text" id="nickname">
+          <input type="text" id="nickname" class="button" class="input_text">
           <br>
-          <input type="button" id="btn" value="Join">
+          <input type="button" id="btn" value="Join" class="button">
         </td>
       </tr>
     </table>
